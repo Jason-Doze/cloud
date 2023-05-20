@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# This script will log in the address of a raspberry-pi 400 ubuntu server, copy the files over the Pi, excute the script, and SSH into the server.
+# This script connects to a Raspberry Pi 400 running Ubuntu Server and synchronizes the local directory with the Pi. It then installs the AWS CLI on the Pi and initiates an SSH session to facilitate AWS SSO configuration and login.
 
 echo -e "\n==== Validate Pi server is running ====\n"
 while true
 do
-  if ( ssh -T -o StrictHostKeyChecking=no "$USER"@"$PI_HOST" 'exit' )
+  if ( ssh -T -o StrictHostKeyChecking=no "$USER@$PI_HOST" 'exit' )
   then
     echo -e "\n==== Server is running  ====\n"
     break
@@ -21,10 +21,8 @@ rsync -av -e "ssh -o StrictHostKeyChecking=no" --delete --exclude={'.git','.giti
 
 # Use SSH to execute commands on the Pi server
 echo -e "\n==== Executing aws_install script ====\n"
-ssh -t -o StrictHostKeyChecking=no "$USER"@$PI_HOST 'cd cloud && bash aws_install.sh'
+ssh -t -o StrictHostKeyChecking=no $USER@$PI_HOST 'cd cloud && bash aws_install.sh'
 
 # SSH into Pi server
 echo -e "\n==== SSH into Pi ====\n"
-ssh -t -o StrictHostKeyChecking=no "$USER"@$PI_HOST 'cd cloud && bash aws_login.sh'
-
-# -o ConnectTimeout=20
+ssh -t -o StrictHostKeyChecking=no $USER@$PI_HOST 'cd cloud && bash aws_login.sh'
