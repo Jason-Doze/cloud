@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script installs the AWS CLI.
+# This script installs the AWS CLI and prompts the SSO sign in process.
 
 sudo apt update
 
@@ -36,4 +36,13 @@ then
 else 
   echo -e "\n==== Installing awscli ====\n"
   sudo ./aws/install
+fi
+
+# Authenticate and sign in with AWS SSO
+if ( aws sts get-caller-identity ) 
+then
+  echo -e "\n==== SSO authenticated ====\n"
+else 
+  echo -e "\n==== Authenticating SSO ====\n"
+  aws configure sso --profile default
 fi
